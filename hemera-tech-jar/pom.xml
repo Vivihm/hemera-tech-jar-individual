@@ -24,7 +24,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>hemera.tech.looca.Login</mainClass> 
+                            <mainClass>hemera.tech.looca.TesteLogin</mainClass> 
                         </manifest>
                     </archive>
                 </configuration>
