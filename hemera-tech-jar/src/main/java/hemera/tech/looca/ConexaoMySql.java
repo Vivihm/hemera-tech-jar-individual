@@ -26,7 +26,7 @@ public class ConexaoMySql {
         //dataSource​.setPassword("urubu100");  
         
         dataSource​.setDriverClassName("com.mysql.cj.jdbc.Driver");
-        dataSource​.setUrl("jdbc:mysql://3.93.213.244:3306/hemeraTech?autoReconnect=true&useSSL=false");
+        dataSource​.setUrl("jdbc:mysql://3.84.39.225:3306/hemeraTech?autoReconnect=true&useSSL=false");
 
         dataSource​.setUsername("root");
         dataSource​.setPassword("urubu100");
