@@ -54,8 +54,8 @@ public class TesteLogin {
             if (computadoresAzure.isEmpty() && computadoresMySql.isEmpty()) {
                 System.out.println("vamos cadastrar esse  computador");
                 // FAZER INSERT NA TABELA COMPUTADOR //PROVAVELMENTE VOU TER QUE MUDARRR
-                conAzure.update(String.format("insert into Computador (MacAddress,idEmpresa,modelo,processador,memoria_ram) values ('%s',%d,'%s','%s','16')", api.hostName,usuarioLogadoAzure.getIdEmpresa(), api.sistemaOperacional, api.processador.getFabricante()));
-                conMySql.update(String.format("insert into Computador (MacAddress,idEmpresa,modelo,processador,memoria_ram) values ('%s',%d,'%s','%s','16')", api.hostName,usuarioLogadoMySql.getIdEmpresa(), api.sistemaOperacional, api.processador.getFabricante()));
+                conAzure.update(String.format("insert into Computador (MacAddress,idEmpresa,modelo,processador,memoria_ram) values ('%s',%d,'%s','%s','16')", api.hostName, usuarioLogadoAzure.getIdEmpresa(), api.sistemaOperacional, api.processador.getFabricante()));
+                conMySql.update(String.format("insert into Computador (MacAddress,idEmpresa,modelo,processador,memoria_ram) values ('%s',%d,'%s','%s','16')", api.hostName, usuarioLogadoMySql.getIdEmpresa(), api.sistemaOperacional, api.processador.getFabricante()));
 
             } else {
                 System.out.println("computador já está cadastrado");
