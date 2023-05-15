@@ -15,7 +15,7 @@ public class Conexao {
 
     private JdbcTemplate connection;
 
-    public Conexao() {
+    public Conexao () {
 
         BasicDataSource dataSource = new BasicDataSource();
 
@@ -25,16 +25,7 @@ public class Conexao {
 
         dataSource​.setUsername("hemeratech");
         dataSource​.setPassword("#Gfgrupo7");  
-        
-       //CONEXAO MYSQL
-       //dataSource​.setDriverClassName("com.mysql.cj.jdbc.Driver");  
-       //dataSource​.setUrl("jdbc:mysql://localhost:3306/hemeratech?serverTimezone=America/Sao_Paulo");
-
-        //dataSource​.setUsername("root");
-        //dataSource​.setPassword("abbeydawn2001");  
-        
-        
-
+     
         this.connection = new JdbcTemplate(dataSource);
 
     }

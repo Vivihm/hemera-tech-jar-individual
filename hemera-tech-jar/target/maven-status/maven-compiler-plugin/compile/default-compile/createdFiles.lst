@@ -1,4 +1,5 @@
 hemera\tech\looca\Conexao.class
+hemera\tech\looca\ConexaoMySql.class
 hemera\tech\looca\API.class
 hemera\tech\looca\TesteLogin.class
 hemera\tech\looca\Usuario.class
