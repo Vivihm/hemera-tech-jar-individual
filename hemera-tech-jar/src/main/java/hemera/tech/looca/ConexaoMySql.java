@@ -20,16 +20,16 @@ public class ConexaoMySql {
         BasicDataSource dataSource = new BasicDataSource();
 
         //CONEXAO MYSQL
-        //dataSource​.setDriverClassName("com.mysql.cj.jdbc.Driver");  
-        //dataSource​.setUrl("jdbc:mysql://localhost:3306/hemeratech?serverTimezone=America/Sao_Paulo");
-        //dataSource​.setUsername("root");
-        //dataSource​.setPassword("urubu100");  
+        dataSource​.setDriverClassName("com.mysql.cj.jdbc.Driver");  
+        dataSource​.setUrl("jdbc:mysql://localhost:3306/hemeratech?serverTimezone=America/Sao_Paulo");
+        dataSource​.setUsername("root");
+        dataSource​.setPassword("abbeydawn2001");  
         
         dataSource​.setDriverClassName("com.mysql.cj.jdbc.Driver");
-        dataSource​.setUrl("jdbc:mysql://100.26.99.31:3306/hemeraTech?autoReconnect=true&useSSL=false");
+     //dataSource​.setUrl("jdbc:mysql://100.26.99.31:3306/HemeraTech?autoReconnect=true&useSSL=false");
 
-        dataSource​.setUsername("root");
-        dataSource​.setPassword("urubu100");
+     //   dataSource​.setUsername("root");
+    // dataSource​.setPassword("urubu100");
 
         this.connection = new JdbcTemplate(dataSource);
 
