@@ -19,7 +19,7 @@ public class TesteLogin {
     public static void main(String[] args) {
         API api = new API();
 
-        Conexao conexaoAzure = new Conexao();;
+        Conexao conexaoAzure = new Conexao();
         JdbcTemplate conAzure = conexaoAzure.getConnection();
 
         ConexaoMySql conexaoMySql = new ConexaoMySql();
