@@ -14,6 +14,7 @@ import com.github.britooo.looca.api.group.rede.RedeInterface;
 import com.github.britooo.looca.api.group.sistema.Sistema;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 /**
  *
@@ -22,6 +23,12 @@ import java.util.concurrent.TimeUnit;
 public class API {
 
     Looca looca = new Looca();
+
+    Conexao conexaoAzure = new Conexao();
+    JdbcTemplate conAzure = conexaoAzure.getConnection();
+
+    ConexaoMySql conexaoMySql = new ConexaoMySql();
+    JdbcTemplate conMySql = conexaoMySql.getConnection();
 
     public Sistema sistema = looca.getSistema();
     public Processador processador = looca.getProcessador();
@@ -117,4 +124,15 @@ public class API {
         }
     }
 
+    public void inserirDadosAzure(Computador cAzure) {
+        String insertTabelaRegistro = "insert into Registros(uso_cpu,utilizado_memoria,utilizado_armazenamento, download_rede, upload_rede, idComputador, MacAddress, idEmpresa) values (?,?,?,?,?,?,?,?)";
+        conAzure.update(insertTabelaRegistro, usoCpu(), usoRam(), usoDisco(), velocidadeDowload(), velocidadeUpload(), cAzure.getIdComputador(), macAddress(), cAzure.getIdEmpresa());
+
+    }
+    
+    public void inserirDadosMySql(Computador cMySql) {
+        String insertTabelaRegistro = "insert into Registros(uso_cpu,utilizado_memoria,utilizado_armazenamento, download_rede, upload_rede, idComputador, MacAddress, idEmpresa) values (?,?,?,?,?,?,?,?)";
+        conMySql.update(insertTabelaRegistro, usoCpu(), usoRam(), usoDisco(), velocidadeDowload(), velocidadeUpload(), cMySql.getIdComputador(), macAddress(), cMySql.getIdEmpresa());
+
+    }
 }

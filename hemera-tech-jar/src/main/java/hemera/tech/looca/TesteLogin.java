@@ -4,9 +4,10 @@
  */
 package hemera.tech.looca;
 
-import com.github.britooo.looca.api.group.discos.Disco;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Timer;
+import java.util.TimerTask;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 
@@ -24,7 +25,6 @@ public class TesteLogin {
 
         ConexaoMySql conexaoMySql = new ConexaoMySql();
         JdbcTemplate conMySql = conexaoMySql.getConnection();
-        
 
         Scanner leitor = new Scanner(System.in);
         System.out.println("Seja bem vindo de volta ao sistema de monitoramento da hemera Tech");
@@ -37,28 +37,45 @@ public class TesteLogin {
         String selectUsuario = "select nome,sobrenome,email,senha,idEmpresa from Funcionario where email= ? and  senha= ?";
         Usuario usuarioLogadoAzure = conAzure.queryForObject(selectUsuario, new BeanPropertyRowMapper<>(Usuario.class), emailDigitado, senhaDigitada);
         Usuario usuarioLogadoMySql = conMySql.queryForObject(selectUsuario, new BeanPropertyRowMapper<>(Usuario.class), emailDigitado, senhaDigitada);
-        
-        //System.out.println(usuarioLogado);
+
         if (usuarioLogadoAzure == null || usuarioLogadoMySql == null) {
-            System.out.println("Usuário ou senha incorretos");                   
+            System.out.println("Usuário ou senha incorretos");
         } else {
             //PUXAR SE EXISTE COMPUTADORES DA EMPRESA COM MACADDRESS 
-            List<Empresa> computadoresAzure = conAzure.query("select * from Computador where idEmpresa = ? and MacAddress = ?",
-                    new BeanPropertyRowMapper(Empresa.class), usuarioLogadoAzure.getIdEmpresa(), api.macAddress());
-            List<Empresa> computadoresMySql = conMySql.query("select idEmpresa, MacAddress from Computador where idEmpresa = ? and MacAddress = ?",
-                    new BeanPropertyRowMapper(Empresa.class), usuarioLogadoMySql.getIdEmpresa(), api.macAddress());
+            String selectComputador = "select idComputador, idEmpresa from Computador where idEmpresa = ? and MacAddress = ?";
+            List<Computador> computadoresLogadosAzure = conAzure.query(selectComputador, new BeanPropertyRowMapper<>(Computador.class), usuarioLogadoAzure.getIdEmpresa(), api.macAddress());
+            List<Computador> computadoresLogadosMySql = conMySql.query(selectComputador, new BeanPropertyRowMapper<>(Computador.class), usuarioLogadoMySql.getIdEmpresa(), api.macAddress());
 
-            if (computadoresAzure.isEmpty() && computadoresMySql.isEmpty()) {
+            if (computadoresLogadosAzure.isEmpty() && computadoresLogadosMySql.isEmpty()) {
                 System.out.println("vamos cadastrar esse  computador");
                 // FAZER INSERT NA TABELA COMPUTADOR 
-                conAzure.update(String.format("insert into Computador (sistema_operacional, modelo, MacAddress, total_memoria, total_armazenamento, idEmpresa) values ('%s','%s','%s','%s','%s',%d)", api.sistemaOperacional(),api.modeloProcessador(),api.macAddress(),api.totalMemoria(),api.totalDisco(),usuarioLogadoAzure.getIdEmpresa()));
-                conMySql.update(String.format("insert into Computador (sistema_operacional, modelo, MacAddress, total_memoria, total_armazenamento, idEmpresa) values ('%s','%s','%s','%s','%s', %d)", api.sistemaOperacional(),api.modeloProcessador(),api.macAddress(),api.totalMemoria(),api.totalDisco(),usuarioLogadoMySql.getIdEmpresa()));
+                conAzure.update(String.format("insert into Computador (sistema_operacional, modelo, MacAddress, total_memoria, total_armazenamento, idEmpresa) values ('%s','%s','%s','%s','%s',%d)", api.sistemaOperacional(), api.modeloProcessador(), api.macAddress(), api.totalMemoria(), api.totalDisco(), usuarioLogadoAzure.getIdEmpresa()));
+                conMySql.update(String.format("insert into Computador (sistema_operacional, modelo, MacAddress, total_memoria, total_armazenamento, idEmpresa) values ('%s','%s','%s','%s','%s', %d)", api.sistemaOperacional(), api.modeloProcessador(), api.macAddress(), api.totalMemoria(), api.totalDisco(), usuarioLogadoMySql.getIdEmpresa()));
 
+                System.out.println("Cadastrei os computadores!!");
             } else {
-                System.out.println("computador já está cadastrado");
+                System.out.println("computador já estava cadastrado");
             }
 
+            System.out.println("COMEÇAR A REGISTRAR DADOS A CADA X SEGUNDOS");
+            Timer tempo = new Timer();
+            tempo.scheduleAtFixedRate(new TimerTask() {
+                @Override
+                public void run() {
+                    Computador computadorLogadoAzure = conAzure.queryForObject(selectComputador, new BeanPropertyRowMapper<>(Computador.class), usuarioLogadoAzure.getIdEmpresa(), api.macAddress());
+                    Computador computadorLogadoMySql = conMySql.queryForObject(selectComputador, new BeanPropertyRowMapper<>(Computador.class), usuarioLogadoMySql.getIdEmpresa(), api.macAddress());
+
+                    try {
+                        api.inserirDadosAzure(computadorLogadoAzure);
+                        api.inserirDadosMySql(computadorLogadoMySql);
+                        System.out.println("INSERI EIN");
+                    } catch (Exception e) {
+                        System.out.println("Erro ao inserir dados: " + e.getMessage());
+                    }
+                }
+            }, 0, 20000);
         }
-        
+
     }
+
 }

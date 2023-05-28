@@ -14,8 +14,9 @@ public class Usuario {
     private String sobrenome;
     private String email;
     private String senha;
+    private Integer computadorAtual;
 
-    public Usuario( Integer idEmpresa, String nome, String sobrenome, String email, String senha) {
+    public Usuario(Integer idEmpresa, String nome, String sobrenome, String email, String senha) {
         this.idEmpresa = idEmpresa;
         this.nome = nome;
         this.sobrenome = sobrenome;
@@ -23,8 +24,8 @@ public class Usuario {
         this.senha = senha;
     }
 
-        public Usuario() {
-       
+    public Usuario() {
+
     }
 
     public Integer getIdEmpresa() {
@@ -67,13 +68,22 @@ public class Usuario {
         this.senha = senha;
     }
 
+    public Integer getComputadorAtual() {
+        return computadorAtual;
+    }
+
+    public void setComputadorAtual(Integer computadorAtual) {
+        this.computadorAtual = computadorAtual;
+    }
+
     @Override
     public String toString() {
-        return  String.format("\nUsuario"
+        return String.format("\nUsuario"
                 + "\nidEmpresa: %d"
                 + "\nFuncionário: %s %s"
                 + "\nEmail: %s"
-                + "\nSenha: %s", idEmpresa, nome, sobrenome, email,senha);
+                + "\nSenha: %s"
+                + "\nComputador sendo usado: %d", idEmpresa, nome, sobrenome, email, senha, computadorAtual);
     }
 
-   }
+}
