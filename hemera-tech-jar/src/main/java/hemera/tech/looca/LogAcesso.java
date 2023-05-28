@@ -16,11 +16,12 @@ import java.time.LocalDateTime;
  */
 public class LogAcesso {
 
-    public void  salvar() {
-        Usuario usuario = new Usuario();
+    public void salvar(String email, Boolean logou) {
 
         LocalDateTime dataHora = LocalDateTime.now();
-        String diaAtual = String.format("%d-%d-%d", dataHora.getDayOfMonth(), dataHora.getMonthValue(), dataHora.getYear());
+        String horaAtual = String.format("%d:%d:%d ",dataHora.getHour(),dataHora.getMinute(),dataHora.getSecond());
+        String diaAtual = dataHora.toLocalDate().toString();
+
         File arquivo = new File(diaAtual);
 
         try {
@@ -28,12 +29,15 @@ public class LogAcesso {
             FileWriter fw = new FileWriter(arquivo, true);
             BufferedWriter escrever = new BufferedWriter(fw);
 
-            //COLOCAR VALIDAÇÕES TAMBEM CASO A PESSOA ERROU A SENHA
-            escrever.write(dataHora + " Usuario: " + usuario.getEmail()+ " logou\n");
+            if (logou) {
+                escrever.write(diaAtual+" - "+ horaAtual +" - " + email +" - " +" fez login \n");
+            } else {
+                escrever.write(diaAtual + " - "+ horaAtual +" - "+ email +" - " +" fez uma tentativa de login\n");
+            }
             escrever.close();
             fw.close();
 
-            System.out.println(dataHora);
+            System.out.println("inseri");
 
         } catch (IOException ex) {
         }

@@ -4,6 +4,8 @@
  */
 package hemera.tech.looca;
 
+import java.util.Scanner;
+
 /**
  *
  * @author VivianaMarca
@@ -36,6 +38,24 @@ public class TESTE {
 
         System.out.println("Velocidade Upload - mpbs");
         System.out.println(api.velocidadeUpload());
+        
+         Boolean logou = false;
+
+        Scanner leitor = new Scanner(System.in);
+        System.out.println("Seja bem vindo de volta ao sistema de monitoramento da hemera Tech");
+        System.out.println("Email:");
+        String emailDigitado = leitor.nextLine();
+        System.out.println("Senha:");
+        String senhaDigitada = leitor.nextLine();
+                LogAcesso log = new LogAcesso();
+
+        if(emailDigitado.equals("viviana.hmarca@gmail.com") && senhaDigitada.equals("senha123")) {
+            logou = true;
+            log.salvar(emailDigitado, logou);
+        }else {
+                        log.salvar(emailDigitado, logou);
+
+        }
 
     }
 

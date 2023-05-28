@@ -19,12 +19,16 @@ public class TesteLogin {
 
     public static void main(String[] args) {
         API api = new API();
+        LogAcesso log = new LogAcesso();
 
         Conexao conexaoAzure = new Conexao();
         JdbcTemplate conAzure = conexaoAzure.getConnection();
 
         ConexaoMySql conexaoMySql = new ConexaoMySql();
         JdbcTemplate conMySql = conexaoMySql.getConnection();
+
+        //LOG ACESSO
+        Boolean logou = false;
 
         Scanner leitor = new Scanner(System.in);
         System.out.println("Seja bem vindo de volta ao sistema de monitoramento da hemera Tech");
@@ -40,17 +44,24 @@ public class TesteLogin {
 
         if (usuarioLogadoAzure == null || usuarioLogadoMySql == null) {
             System.out.println("Usuário ou senha incorretos");
+            // LOGGG
+            log.salvar(emailDigitado, logou);
+
         } else {
+            // LOGGG
+            logou = true;
+            log.salvar(emailDigitado, logou);
+
             //PUXAR SE EXISTE COMPUTADORES DA EMPRESA COM MACADDRESS 
             String selectComputador = "select idComputador, idEmpresa from Computador where idEmpresa = ? and MacAddress = ?";
             List<Computador> computadoresLogadosAzure = conAzure.query(selectComputador, new BeanPropertyRowMapper<>(Computador.class), usuarioLogadoAzure.getIdEmpresa(), api.macAddress());
-            List<Computador> computadoresLogadosMySql = conMySql.query(selectComputador, new BeanPropertyRowMapper<>(Computador.class), usuarioLogadoMySql.getIdEmpresa(), api.macAddress());
+            // List<Computador> computadoresLogadosMySql = conMySql.query(selectComputador, new BeanPropertyRowMapper<>(Computador.class), usuarioLogadoMySql.getIdEmpresa(), api.macAddress());
 
-            if (computadoresLogadosAzure.isEmpty() && computadoresLogadosMySql.isEmpty()) {
+            if (computadoresLogadosAzure.isEmpty()) {
                 System.out.println("vamos cadastrar esse  computador");
                 // FAZER INSERT NA TABELA COMPUTADOR 
                 conAzure.update(String.format("insert into Computador (sistema_operacional, modelo, MacAddress, total_memoria, total_armazenamento, idEmpresa) values ('%s','%s','%s','%s','%s',%d)", api.sistemaOperacional(), api.modeloProcessador(), api.macAddress(), api.totalMemoria(), api.totalDisco(), usuarioLogadoAzure.getIdEmpresa()));
-                conMySql.update(String.format("insert into Computador (sistema_operacional, modelo, MacAddress, total_memoria, total_armazenamento, idEmpresa) values ('%s','%s','%s','%s','%s', %d)", api.sistemaOperacional(), api.modeloProcessador(), api.macAddress(), api.totalMemoria(), api.totalDisco(), usuarioLogadoMySql.getIdEmpresa()));
+                //   conMySql.update(String.format("insert into Computador (sistema_operacional, modelo, MacAddress, total_memoria, total_armazenamento, idEmpresa) values ('%s','%s','%s','%s','%s', %d)", api.sistemaOperacional(), api.modeloProcessador(), api.macAddress(), api.totalMemoria(), api.totalDisco(), usuarioLogadoMySql.getIdEmpresa()));
 
                 System.out.println("Cadastrei os computadores!!");
             } else {
@@ -63,11 +74,11 @@ public class TesteLogin {
                 @Override
                 public void run() {
                     Computador computadorLogadoAzure = conAzure.queryForObject(selectComputador, new BeanPropertyRowMapper<>(Computador.class), usuarioLogadoAzure.getIdEmpresa(), api.macAddress());
-                    Computador computadorLogadoMySql = conMySql.queryForObject(selectComputador, new BeanPropertyRowMapper<>(Computador.class), usuarioLogadoMySql.getIdEmpresa(), api.macAddress());
+                    //     Computador computadorLogadoMySql = conMySql.queryForObject(selectComputador, new BeanPropertyRowMapper<>(Computador.class), usuarioLogadoMySql.getIdEmpresa(), api.macAddress());
 
                     try {
                         api.inserirDadosAzure(computadorLogadoAzure);
-                        api.inserirDadosMySql(computadorLogadoMySql);
+                        //       api.inserirDadosMySql(computadorLogadoMySql);
                         System.out.println("INSERI EIN");
                     } catch (Exception e) {
                         System.out.println("Erro ao inserir dados: " + e.getMessage());

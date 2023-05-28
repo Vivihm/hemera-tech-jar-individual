@@ -127,7 +127,6 @@ public class API {
     public void inserirDadosAzure(Computador cAzure) {
         String insertTabelaRegistro = "insert into Registros(uso_cpu,utilizado_memoria,utilizado_armazenamento, download_rede, upload_rede, idComputador, MacAddress, idEmpresa) values (?,?,?,?,?,?,?,?)";
         conAzure.update(insertTabelaRegistro, usoCpu(), usoRam(), usoDisco(), velocidadeDowload(), velocidadeUpload(), cAzure.getIdComputador(), macAddress(), cAzure.getIdEmpresa());
-
     }
     
     public void inserirDadosMySql(Computador cMySql) {
