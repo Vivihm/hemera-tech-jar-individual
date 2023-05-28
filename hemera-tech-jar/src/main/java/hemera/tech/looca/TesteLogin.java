@@ -44,15 +44,15 @@ public class TesteLogin {
         } else {
             //PUXAR SE EXISTE COMPUTADORES DA EMPRESA COM MACADDRESS 
             List<Empresa> computadoresAzure = conAzure.query("select * from Computador where idEmpresa = ? and MacAddress = ?",
-                    new BeanPropertyRowMapper(Empresa.class), usuarioLogadoAzure.getIdEmpresa(), api.macAddress);
+                    new BeanPropertyRowMapper(Empresa.class), usuarioLogadoAzure.getIdEmpresa(), api.macAddress());
             List<Empresa> computadoresMySql = conMySql.query("select idEmpresa, MacAddress from Computador where idEmpresa = ? and MacAddress = ?",
-                    new BeanPropertyRowMapper(Empresa.class), usuarioLogadoMySql.getIdEmpresa(), api.macAddress);
+                    new BeanPropertyRowMapper(Empresa.class), usuarioLogadoMySql.getIdEmpresa(), api.macAddress());
 
             if (computadoresAzure.isEmpty() && computadoresMySql.isEmpty()) {
                 System.out.println("vamos cadastrar esse  computador");
                 // FAZER INSERT NA TABELA COMPUTADOR 
-                conAzure.update(String.format("insert into Computador (sistema_operacional, modelo, MacAddress, total_memoria, total_armazenamento, idEmpresa) values ('%s','%s','%s','%s','%s',%d)", api.sistemaOperacional,api.modeloProcessador,api.macAddress,api.totalMemoria,api.totalDisco,usuarioLogadoAzure.getIdEmpresa()));
-                conMySql.update(String.format("insert into Computador (sistema_operacional, modelo, MacAddress, total_memoria, total_armazenamento, idEmpresa) values ('%s','%s','%s','%s','%s', %d)", api.sistemaOperacional,api.modeloProcessador,api.macAddress,api.totalMemoria,api.totalDisco,usuarioLogadoMySql.getIdEmpresa()));
+                conAzure.update(String.format("insert into Computador (sistema_operacional, modelo, MacAddress, total_memoria, total_armazenamento, idEmpresa) values ('%s','%s','%s','%s','%s',%d)", api.sistemaOperacional(),api.modeloProcessador(),api.macAddress(),api.totalMemoria(),api.totalDisco(),usuarioLogadoAzure.getIdEmpresa()));
+                conMySql.update(String.format("insert into Computador (sistema_operacional, modelo, MacAddress, total_memoria, total_armazenamento, idEmpresa) values ('%s','%s','%s','%s','%s', %d)", api.sistemaOperacional(),api.modeloProcessador(),api.macAddress(),api.totalMemoria(),api.totalDisco(),usuarioLogadoMySql.getIdEmpresa()));
 
             } else {
                 System.out.println("computador já está cadastrado");

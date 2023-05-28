@@ -23,73 +23,97 @@ public class API {
 
     Looca looca = new Looca();
 
-    Sistema sistema = looca.getSistema();
-    Processador processador = looca.getProcessador();
-    Memoria memoria = looca.getMemoria();
+    public Sistema sistema = looca.getSistema();
+    public Processador processador = looca.getProcessador();
+    public Memoria memoria = looca.getMemoria();
 
-    List<Disco> discos = looca.getGrupoDeDiscos().getDiscos();
-    Long tamanhioTotal = looca.getGrupoDeDiscos().getTamanhoTotal();
-    // Integer qtdDiscos = looca.getGrupoDeDiscos().getQuantidadeDeDiscos();
+    public List<Disco> discos = looca.getGrupoDeDiscos().getDiscos();
+    public Long tamanhioTotal = looca.getGrupoDeDiscos().getTamanhoTotal();
     //SETADO EM 0 PQ TENHO APENAS UM DISCO NO NOTE
-    Disco discoAtual = discos.get(0);
+    public Disco discoAtual = discos.get(0);
     //PRECISO DO VOLUME PQ É NELE QUE CONTEM O DISPONIVEL PRA CALCULO DE USO
-    List<Volume> volumes = looca.getGrupoDeDiscos().getVolumes();
-    Volume volume = volumes.get(0);
+    public List<Volume> volumes = looca.getGrupoDeDiscos().getVolumes();
+    public Volume volume = volumes.get(0);
 
-    Rede rede = looca.getRede();
+    public Rede rede = looca.getRede();
     //PEGANDO TODA O GRUPO DE INTERFACES
-    List<RedeInterface> interfacesRede = rede.getGrupoDeInterfaces().getInterfaces();
+    public List<RedeInterface> interfacesRede = rede.getGrupoDeInterfaces().getInterfaces();
 
     //FILTRANDO APENAS A INTERFACE QUE TEM DOWLOAD E UPLOAD MAIOR QUE 0
-    List<RedeInterface> dadosRede = interfacesRede.stream().filter(rede -> rede.getBytesEnviados() > 0 && rede.getBytesRecebidos() > 0).toList();
+    public List<RedeInterface> dadosRede = interfacesRede.stream().filter(rede -> rede.getBytesEnviados() > 0 && rede.getBytesRecebidos() > 0).toList();
     //PEGANDO A UNICA INTERFACE QUE TEM DOWLOAD E UPLOAD
-    RedeInterface redeAtual = dadosRede.get(0);
+    public RedeInterface redeAtual = dadosRede.get(0);
 
     //RECEBE UM VALOR E FAZ UMA CONTA DE CONVERSAO 
     //TRANFORMA O VALOR EM GIGABYTE
     private static Double byteConverter(long bytes) {
         return (double) bytes / (1024 * 1024 * 1024);
     }
-    // TRANFORMA O VALOR EM MEGABYTE
 
+    // TRANFORMA O VALOR EM MEGABYTE
     private static Double byteConverterMega(long bytes) {
         return (double) bytes / (1024 * 1024);
     }
 
     //Informações computador
-    String sistemaOperacional = sistema.getSistemaOperacional();
-    String modeloProcessador = processador.getFabricante();
-    String macAddress = redeAtual.getEnderecoMac();
-    String totalMemoria = String.format("%.2f", byteConverter(memoria.getTotal()));
-    String totalDisco = String.format("%.2f", byteConverter(discoAtual.getTamanho()));
+    public String sistemaOperacional() {
+        return sistema.getSistemaOperacional();
+    }
+
+    public String modeloProcessador() {
+        return processador.getFabricante();
+    }
+
+    public String macAddress() {
+        return redeAtual.getEnderecoMac();
+    }
+
+    public String totalMemoria() {
+        return String.format("%.2f", byteConverter(memoria.getTotal()));
+    }
+
+    public String totalDisco() {
+        return String.format("%.2f", byteConverter(discoAtual.getTamanho()));
+    }
 
     //INFORMAÇÕES PARA TABELA REGISTROS
+    public Double usoCpu() {
+        return processador.getUso() < 10.0 ? processador.getUso() * 10 : processador.getUso();
+    }
 
-    public Double getVelocidadeDowload() {
+    public Double usoRam() {
+        return (memoria.getEmUso().doubleValue() / memoria.getTotal().doubleValue()) * 100;
+    }
+
+    public Double usoDisco() {
+        return ((volume.getTotal().doubleValue() - volume.getDisponivel().doubleValue()) / volume.getTotal().doubleValue()) * 100;
+    }
+
+    public Double velocidadeDowload() {
         try {
             Long velocidadeDowloadInicioSegundo = redeAtual.getBytesRecebidos();
             TimeUnit.SECONDS.sleep(1);
             Long velocidadeDowloadFinalSegundo = redeAtual.getBytesRecebidos();
-            
+
             Long diferencaInicioFimSegundoDowload = velocidadeDowloadInicioSegundo - velocidadeDowloadFinalSegundo;
             return byteConverterMega(diferencaInicioFimSegundoDowload);
         } catch (InterruptedException e) {
             System.out.println("Sleep deu errado");
-            return 0.0; 
+            return 0.0;
         }
     }
-    
-        public Double getVelocidadeUpload() {
+
+    public Double velocidadeUpload() {
         try {
             Long velocidadeUploadInicioSegundo = redeAtual.getBytesRecebidos();
             TimeUnit.SECONDS.sleep(1);
             Long velocidadeUploadFinalSegundo = redeAtual.getBytesRecebidos();
-            
+
             Long diferencaInicioFimSegundoUpload = velocidadeUploadInicioSegundo - velocidadeUploadFinalSegundo;
             return byteConverterMega(diferencaInicioFimSegundoUpload);
         } catch (InterruptedException e) {
             System.out.println("Sleep deu errado");
-            return 0.0; 
+            return 0.0;
         }
     }
 
