@@ -38,11 +38,11 @@ public class TesteLogin {
         String senhaDigitada = leitor.nextLine();
 
         //SELECT PARA AUTENTICAR LOGIN
-        String selectUsuario = "select nome,sobrenome,email,senha,idEmpresa from Funcionario where email= ? and  senha= ?";
+        String selectUsuario = "select idFuncionario,nome,sobrenome,email,senha,idEmpresa from Funcionario where email= ? and  senha= ?";
         Usuario usuarioLogadoAzure = conAzure.queryForObject(selectUsuario, new BeanPropertyRowMapper<>(Usuario.class), emailDigitado, senhaDigitada);
-        Usuario usuarioLogadoMySql = conMySql.queryForObject(selectUsuario, new BeanPropertyRowMapper<>(Usuario.class), emailDigitado, senhaDigitada);
+        //  Usuario usuarioLogadoMySql = conMySql.queryForObject(selectUsuario, new BeanPropertyRowMapper<>(Usuario.class), emailDigitado, senhaDigitada);
 
-        if (usuarioLogadoAzure == null || usuarioLogadoMySql == null) {
+        if (usuarioLogadoAzure == null) {
             System.out.println("Usuário ou senha incorretos");
             // LOGGG
             log.salvar(emailDigitado, logou);
@@ -64,8 +64,14 @@ public class TesteLogin {
                 //   conMySql.update(String.format("insert into Computador (sistema_operacional, modelo, MacAddress, total_memoria, total_armazenamento, idEmpresa) values ('%s','%s','%s','%s','%s', %d)", api.sistemaOperacional(), api.modeloProcessador(), api.macAddress(), api.totalMemoria(), api.totalDisco(), usuarioLogadoMySql.getIdEmpresa()));
 
                 System.out.println("Cadastrei os computadores!!");
+
+                computadoresLogadosAzure = conAzure.query(selectComputador, new BeanPropertyRowMapper<>(Computador.class), usuarioLogadoAzure.getIdEmpresa(), api.macAddress());
+                log.inserirLoginBanco(usuarioLogadoAzure, computadoresLogadosAzure.get(0));
+
             } else {
                 System.out.println("computador já estava cadastrado");
+                log.inserirLoginBanco(usuarioLogadoAzure, computadoresLogadosAzure.get(0));
+
             }
 
             System.out.println("COMEÇAR A REGISTRAR DADOS A CADA X SEGUNDOS");
@@ -74,7 +80,7 @@ public class TesteLogin {
                 @Override
                 public void run() {
                     Computador computadorLogadoAzure = conAzure.queryForObject(selectComputador, new BeanPropertyRowMapper<>(Computador.class), usuarioLogadoAzure.getIdEmpresa(), api.macAddress());
-                    //     Computador computadorLogadoMySql = conMySql.queryForObject(selectComputador, new BeanPropertyRowMapper<>(Computador.class), usuarioLogadoMySql.getIdEmpresa(), api.macAddress());
+                    //Computador computadorLogadoMySql = conMySql.queryForObject(selectComputador, new BeanPropertyRowMapper<>(Computador.class), usuarioLogadoMySql.getIdEmpresa(), api.macAddress());
 
                     try {
                         api.inserirDadosAzure(computadorLogadoAzure);

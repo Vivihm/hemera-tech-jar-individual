@@ -9,6 +9,9 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.List;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 /**
  *
@@ -16,13 +19,35 @@ import java.time.LocalDateTime;
  */
 public class LogAcesso {
 
+    API api = new API();
+
+    Conexao conexaoAzure = new Conexao();
+    JdbcTemplate conAzure = conexaoAzure.getConnection();
+
+    ConexaoMySql conexaoMySql = new ConexaoMySql();
+    JdbcTemplate conMySql = conexaoMySql.getConnection();
+    private Integer idLogAcesso;
+    private LocalDateTime dataHoraInicio;
+
+    public void puxarIdLogAcesso() {
+        String ultimoInsertDoLog = "select top 1 idLogAcesso from LogAcessoA where MacAddress = ?";
+        LogAcesso computadorLogadoAzure = conAzure.queryForObject(ultimoInsertDoLog, new BeanPropertyRowMapper<>(LogAcesso.class), api.macAddress());
+    }
+
     public void salvar(String email, Boolean logou) {
+        dataHoraInicio = LocalDateTime.now();
+        System.out.println(dataHoraInicio);
+        String horaAtual = String.format("%d:%02d:%02d", dataHoraInicio.getHour(), dataHoraInicio.getMinute(), dataHoraInicio.getSecond());
+        String diaAtual = dataHoraInicio.toLocalDate().toString();
 
-        LocalDateTime dataHora = LocalDateTime.now();
-        String horaAtual = String.format("%d:%d:%d ",dataHora.getHour(),dataHora.getMinute(),dataHora.getSecond());
-        String diaAtual = dataHora.toLocalDate().toString();
-
-        File arquivo = new File(diaAtual);
+        //CRIA INSTANCIA DA PASTA
+        File pasta = new File("logsDeAcesso");
+        //SE A PASTA NAO EXISTIR ELE CRIA;
+        if (!pasta.exists()) {
+            pasta.mkdirs();
+        }
+        //CRIA O ARQUIVO NA PASTA DEFINIDA
+        File arquivo = new File(pasta, diaAtual);
 
         try {
             arquivo.createNewFile();
@@ -30,17 +55,39 @@ public class LogAcesso {
             BufferedWriter escrever = new BufferedWriter(fw);
 
             if (logou) {
-                escrever.write(diaAtual+" - "+ horaAtual +" - " + email +" - " +" fez login \n");
+                escrever.write(diaAtual + " - " + horaAtual + " - " + email + " - " + " login feito com sucesso \n");
             } else {
-                escrever.write(diaAtual + " - "+ horaAtual +" - "+ email +" - " +" fez uma tentativa de login\n");
+                escrever.write(diaAtual + " - " + horaAtual + " - " + email + " - " + " tentativa de login não bem sucedida\n");
             }
             escrever.close();
             fw.close();
-
             System.out.println("inseri");
 
         } catch (IOException ex) {
+            System.out.println("deu erro ao criar");
         }
+    }
+
+    public void inserirLoginBanco(Usuario u, Computador c) {
+        String insertTabelaLogAcesso = "insert into LogAcessoA (idLogAcesso,idFuncionario, MacAddress, idComputador, idEmpresa, horario_inicio) values(1, ?, ?, ?,?, ?)";
+        conAzure.update(insertTabelaLogAcesso, u.getIdFuncionario(), api.macAddress(), c.getIdComputador(), c.getIdEmpresa(), dataHoraInicio);
+    }
+
+    public void updateTerminarSessão() {
+        puxarIdLogAcesso();
+        LocalDateTime dataHoraFinal = LocalDateTime.now();
+
+        String updateHoraFinal = "update LogAcessoA set horario_final = ? where idLogAcesso = ?";
+        conAzure.update(updateHoraFinal, dataHoraFinal, getIdLogAcesso());
+        System.out.println("deu certo");
+    }
+
+    public Integer getIdLogAcesso() {
+        return idLogAcesso;
+    }
+
+    public void setIdLogAcesso(Integer idLogAcesso) {
+        this.idLogAcesso = idLogAcesso;
     }
 
 }

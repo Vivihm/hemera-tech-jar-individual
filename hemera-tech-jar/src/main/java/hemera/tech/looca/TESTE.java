@@ -25,7 +25,7 @@ public class TESTE {
 
         //System.out.println(api.qtdDiscos);
         System.out.println("\nCPU");
-      System.out.println(api.usoCpu());
+        System.out.println(api.usoCpu());
 
         System.out.println("DISCO - porcentagem ocupada");
         System.out.println(api.usoDisco());
@@ -38,8 +38,10 @@ public class TESTE {
 
         System.out.println("Velocidade Upload - mpbs");
         System.out.println(api.velocidadeUpload());
-        
-         Boolean logou = false;
+
+        Boolean logou = false;
+
+        LogAcesso log = new LogAcesso();
 
         Scanner leitor = new Scanner(System.in);
         System.out.println("Seja bem vindo de volta ao sistema de monitoramento da hemera Tech");
@@ -47,16 +49,15 @@ public class TESTE {
         String emailDigitado = leitor.nextLine();
         System.out.println("Senha:");
         String senhaDigitada = leitor.nextLine();
-                LogAcesso log = new LogAcesso();
 
-        if(emailDigitado.equals("viviana.hmarca@gmail.com") && senhaDigitada.equals("senha123")) {
+        if (emailDigitado.equals("viviana.hmarca@gmail.com") && senhaDigitada.equals("senha123")) {
             logou = true;
             log.salvar(emailDigitado, logou);
-        }else {
-                        log.salvar(emailDigitado, logou);
-
+            
+        } else {
+            log.salvar(emailDigitado, logou);
         }
-
+   
     }
 
 }

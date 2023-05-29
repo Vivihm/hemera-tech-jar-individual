@@ -9,6 +9,8 @@ package hemera.tech.looca;
  * @author VivianaMarca
  */
 public class Usuario {
+
+    private Integer idFuncionario;
     private Integer idEmpresa;
     private String nome;
     private String sobrenome;
@@ -16,7 +18,8 @@ public class Usuario {
     private String senha;
     private Integer computadorAtual;
 
-    public Usuario(Integer idEmpresa, String nome, String sobrenome, String email, String senha) {
+    public Usuario(Integer idFuncionario, Integer idEmpresa, String nome, String sobrenome, String email, String senha) {
+        this.idFuncionario = idFuncionario;
         this.idEmpresa = idEmpresa;
         this.nome = nome;
         this.sobrenome = sobrenome;
@@ -27,6 +30,16 @@ public class Usuario {
     public Usuario() {
 
     }
+
+    public Integer getIdFuncionario() {
+        return idFuncionario;
+    }
+
+    public void setIdFuncionario(Integer idFuncionario) {
+        this.idFuncionario = idFuncionario;
+    }
+    
+    
 
     public Integer getIdEmpresa() {
         return idEmpresa;
@@ -79,11 +92,12 @@ public class Usuario {
     @Override
     public String toString() {
         return String.format("\nUsuario"
+                + "\nidFuncionario: %d"
                 + "\nidEmpresa: %d"
                 + "\nFuncionário: %s %s"
                 + "\nEmail: %s"
                 + "\nSenha: %s"
-                + "\nComputador sendo usado: %d", idEmpresa, nome, sobrenome, email, senha, computadorAtual);
+                + "\nComputador sendo usado: %d",idFuncionario, idEmpresa, nome, sobrenome, email, senha, computadorAtual);
     }
 
 }
