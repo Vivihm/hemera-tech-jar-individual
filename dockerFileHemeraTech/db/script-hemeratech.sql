@@ -1,4 +1,5 @@
 -- create database HemeraTech;
+-- O DO DOCKEERR
 use HemeraTech;
 
 create table Empresa (
@@ -41,7 +42,7 @@ primary key(idComputador, MacAddress, idEmpresa)
 );
 
 create table Registros(
-momento datetime default(current_timestamp()),
+momento datetime default current_timestamp(),
 uso_cpu double,
 utilizado_memoria double,
 utilizado_armazenamento double,
@@ -66,4 +67,5 @@ CREATE TABLE LogAcesso (
 );
 
 insert into Empresa (nome) values ('hemeraTech');
-insert into Funcionario (email, senha, idEmpresa) values ("viviana.hmarca@gmail.com", 'senha123', 1);
+insert into Funcionario (idFuncionario, email, senha, idEmpresa) values (12,"viviana.hmarca@gmail.com", 'senha123', 1);
+

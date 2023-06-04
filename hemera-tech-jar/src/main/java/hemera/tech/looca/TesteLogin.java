@@ -34,51 +34,51 @@ public class TesteLogin {
         String emailDigitado = leitor.nextLine();
         System.out.println("Senha:");
         String senhaDigitada = leitor.nextLine();
-        
-        try {
-        //SELECT PARA AUTENTICAR LOGIN
-        String selectUsuario = "select idFuncionario,nome,sobrenome,email,senha,idEmpresa from Funcionario where email= ? and  senha= ?";
-        Usuario usuarioLogadoAzure = conAzure.queryForObject(selectUsuario, new BeanPropertyRowMapper<>(Usuario.class), emailDigitado, senhaDigitada);
-        Usuario usuarioLogadoMySql = conMySql.queryForObject(selectUsuario, new BeanPropertyRowMapper<>(Usuario.class), emailDigitado, senhaDigitada);
 
+        try {
+            //SELECT PARA AUTENTICAR LOGIN
+            String selectUsuario = "select idFuncionario,nome,sobrenome,email,senha,idEmpresa from Funcionario where email= ? and  senha= ?";
+            Usuario usuarioLogadoAzure = conAzure.queryForObject(selectUsuario, new BeanPropertyRowMapper<>(Usuario.class), emailDigitado, senhaDigitada);
+
+            System.out.println(usuarioLogadoAzure);
             // LOGGG
             log.salvar(emailDigitado, true);
 
             //PUXAR SE EXISTE COMPUTADORES DA EMPRESA COM MACADDRESS 
             String selectComputador = "select idComputador, idEmpresa from Computador where idEmpresa = ? and MacAddress = ?";
             List<Computador> computadoresLogadosAzure = conAzure.query(selectComputador, new BeanPropertyRowMapper<>(Computador.class), usuarioLogadoAzure.getIdEmpresa(), api.macAddress());
-            List<Computador> computadoresLogadosMySql = conMySql.query(selectComputador, new BeanPropertyRowMapper<>(Computador.class), usuarioLogadoMySql.getIdEmpresa(), api.macAddress());
+            List<Computador> computadoresLogadosMySql = conMySql.query(selectComputador, new BeanPropertyRowMapper<>(Computador.class), usuarioLogadoAzure.getIdEmpresa(), api.macAddress());
+            System.out.println(computadoresLogadosAzure);
 
             if (computadoresLogadosAzure.isEmpty() && computadoresLogadosMySql.isEmpty()) {
                 System.out.println("vamos cadastrar esse  computador");
                 // FAZER INSERT NA TABELA COMPUTADOR 
                 conAzure.update(String.format("insert into Computador (sistema_operacional, modelo, MacAddress, total_memoria, total_armazenamento, idEmpresa) values ('%s','%s','%s','%s','%s',%d)", api.sistemaOperacional(), api.modeloProcessador(), api.macAddress(), api.totalMemoria(), api.totalDisco(), usuarioLogadoAzure.getIdEmpresa()));
-                conMySql.update(String.format("insert into Computador (sistema_operacional, modelo, MacAddress, total_memoria, total_armazenamento, idEmpresa) values ('%s','%s','%s','%s','%s', %d)", api.sistemaOperacional(), api.modeloProcessador(), api.macAddress(), api.totalMemoria(), api.totalDisco(), usuarioLogadoMySql.getIdEmpresa()));
+                conMySql.update(String.format("insert into Computador (sistema_operacional, modelo, MacAddress, total_memoria, total_armazenamento, idEmpresa) values ('%s','%s','%s','%s','%s', %d)", api.sistemaOperacional(), api.modeloProcessador(), api.macAddress(), api.totalMemoria(), api.totalDisco(), usuarioLogadoAzure.getIdEmpresa()));
 
                 System.out.println("Cadastrei os computadores!!");
 
                 computadoresLogadosAzure = conAzure.query(selectComputador, new BeanPropertyRowMapper<>(Computador.class), usuarioLogadoAzure.getIdEmpresa(), api.macAddress());
                 log.inserirLoginBanco(usuarioLogadoAzure, computadoresLogadosAzure.get(0));
+                System.out.println(computadoresLogadosAzure);
 
             } else {
                 System.out.println("computador já estava cadastrado");
-                log.inserirLoginBanco(usuarioLogadoAzure, computadoresLogadosAzure.get(0));
+               computadoresLogadosAzure = conAzure.query(selectComputador, new BeanPropertyRowMapper<>(Computador.class), usuarioLogadoAzure.getIdEmpresa(), api.macAddress());
 
-            }
-            
-            System.out.println("TESTE ATUALIZR TABELA DE TERMINO DE SESSAO, NÃO CLICAR 0 ");
-            Integer escolhido = leitor.nextInt();
-            if (escolhido == 0) {
-                log.updateTerminarSessão();
+                log.inserirLoginBanco(usuarioLogadoAzure, computadoresLogadosAzure.get(0));
+                System.out.println(computadoresLogadosAzure);
+
             }
 
             System.out.println("COMEÇAR A REGISTRAR DADOS A CADA X SEGUNDOS");
+
             Timer tempo = new Timer();
             tempo.scheduleAtFixedRate(new TimerTask() {
                 @Override
                 public void run() {
                     Computador computadorLogadoAzure = conAzure.queryForObject(selectComputador, new BeanPropertyRowMapper<>(Computador.class), usuarioLogadoAzure.getIdEmpresa(), api.macAddress());
-                    Computador computadorLogadoMySql = conMySql.queryForObject(selectComputador, new BeanPropertyRowMapper<>(Computador.class), usuarioLogadoMySql.getIdEmpresa(), api.macAddress());
+                    Computador computadorLogadoMySql = conMySql.queryForObject(selectComputador, new BeanPropertyRowMapper<>(Computador.class), usuarioLogadoAzure.getIdEmpresa(), api.macAddress());
 
                     try {
                         api.inserirDadosAzure(computadorLogadoAzure);

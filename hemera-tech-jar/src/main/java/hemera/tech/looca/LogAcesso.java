@@ -9,8 +9,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.List;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 /**
@@ -31,7 +29,7 @@ public class LogAcesso {
 
     public void puxarIdLogAcesso() {
         //preciso puxar o id do Logacesso pra atualizar,fiz gamb
-        String ultimoInsertDoLog = "select top 1 idLogAcesso from LogAcessoA where MacAddress = ? order by horario_inicio desc";
+        String ultimoInsertDoLog = "select top 1 idLogAcesso from LogAcesso where MacAddress = ? order by horario_inicio desc";
        idLogAcesso = conAzure.queryForObject(ultimoInsertDoLog, Integer.class, api.macAddress());
     }
 
@@ -72,21 +70,8 @@ public class LogAcesso {
     public void inserirLoginBanco(Usuario u, Computador c) {
         System.out.println("Cadastrar esse log no banco");
         System.out.println(u);
-        String insertTabelaLogAcesso = "insert into LogAcessoA (idLogAcesso,idFuncionario, MacAddress, idComputador, idEmpresa, horario_inicio) values(7, ?, ?, ?,?, ?)";
+        String insertTabelaLogAcesso = "insert into LogAcesso (idFuncionario, MacAddress, idComputador, idEmpresa, horario_inicio) values( ?, ?, ?,?, ?)";
         conAzure.update(insertTabelaLogAcesso, u.getIdFuncionario(), api.macAddress(), c.getIdComputador(), c.getIdEmpresa(), dataHoraInicio);
-    }
-
-    public void updateTerminarSessão() {
-    puxarIdLogAcesso();
-    System.out.println(idLogAcesso);
-    LocalDateTime dataHoraFinal = LocalDateTime.now();
-
-    String updateHoraFinal = "update LogAcessoA set horario_final = ? where idLogAcesso = ?";
-    conAzure.update(updateHoraFinal, dataHoraFinal, idLogAcesso);
-    System.out.println("deu certo");
-}
-    public Integer getIdLogAcesso() {
-        return idLogAcesso;
     }
 
     public void setIdLogAcesso(Integer idLogAcesso) {
