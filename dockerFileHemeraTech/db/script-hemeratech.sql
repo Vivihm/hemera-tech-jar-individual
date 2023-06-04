@@ -1,7 +1,8 @@
--- create database HemeraTech;
+-- create database hemeraTech;
 -- O DO DOCKEERR
-use HemeraTech;
 
+use hemeraTech;
+show databases;
 create table Empresa (
 idEmpresa int primary key auto_increment,
 nome varchar(45),
@@ -69,3 +70,4 @@ CREATE TABLE LogAcesso (
 insert into Empresa (nome) values ('hemeraTech');
 insert into Funcionario (idFuncionario, email, senha, idEmpresa) values (12,"viviana.hmarca@gmail.com", 'senha123', 1);
 
+select * from funcionario;

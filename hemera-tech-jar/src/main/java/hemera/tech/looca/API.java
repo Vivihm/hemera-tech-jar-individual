@@ -68,7 +68,7 @@ public class API {
     }
 
     public String modeloProcessador() {
-        return processador.getFabricante();
+        return processador.getNome();
     }
 
     public String macAddress() {
@@ -85,7 +85,7 @@ public class API {
 
     //INFORMAÇÕES PARA TABELA REGISTROS
     public Double usoCpu() {
-        return processador.getUso() < 10.0 ? processador.getUso() * 10 : processador.getUso();
+        return processador.getUso() <= 10.0 ? processador.getUso() * 10 : processador.getUso();
     }
 
     public Double usoRam() {
@@ -102,7 +102,7 @@ public class API {
             TimeUnit.SECONDS.sleep(1);
             Long velocidadeDowloadFinalSegundo = redeAtual.getBytesRecebidos();
 
-            Long diferencaInicioFimSegundoDowload = velocidadeDowloadInicioSegundo - velocidadeDowloadFinalSegundo;
+            Long diferencaInicioFimSegundoDowload =  velocidadeDowloadFinalSegundo - velocidadeDowloadInicioSegundo ;
             return byteConverterMega(diferencaInicioFimSegundoDowload);
         } catch (InterruptedException e) {
             System.out.println("Sleep deu errado");
@@ -116,7 +116,7 @@ public class API {
             TimeUnit.SECONDS.sleep(1);
             Long velocidadeUploadFinalSegundo = redeAtual.getBytesRecebidos();
 
-            Long diferencaInicioFimSegundoUpload = velocidadeUploadInicioSegundo - velocidadeUploadFinalSegundo;
+            Long diferencaInicioFimSegundoUpload = velocidadeUploadFinalSegundo - velocidadeUploadInicioSegundo ;
             return byteConverterMega(diferencaInicioFimSegundoUpload);
         } catch (InterruptedException e) {
             System.out.println("Sleep deu errado");
