@@ -21,7 +21,7 @@ public class ConexaoMySql {
 
         //CONEXAO MYSQL
         dataSource​.setDriverClassName("com.mysql.cj.jdbc.Driver");  
-        dataSource​.setUrl("jdbc:mysql://54.173.137.218.:3306/hemeratech?serverTimezone=America/Sao_Paulo");
+        dataSource​.setUrl("jdbc:mysql://54.173.137.218:3306/hemeratech?serverTimezone=America/Sao_Paulo");
         dataSource​.setUsername("root");
         dataSource​.setPassword("urubu100");        
 
