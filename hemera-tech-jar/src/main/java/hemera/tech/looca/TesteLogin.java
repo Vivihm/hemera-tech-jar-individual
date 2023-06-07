@@ -50,12 +50,15 @@ public class TesteLogin {
             List<Computador> computadoresLogadosMySql = conMySql.query(selectComputador, new BeanPropertyRowMapper<>(Computador.class), usuarioLogadoAzure.getIdEmpresa(), api.macAddress());
             System.out.println(computadoresLogadosAzure);
 
-            if (computadoresLogadosAzure.isEmpty() && computadoresLogadosMySql.isEmpty()) {
+            if (computadoresLogadosAzure.isEmpty()) {
                 System.out.println("vamos cadastrar esse  computador");
                 // FAZER INSERT NA TABELA COMPUTADOR 
                 conAzure.update(String.format("insert into Computador (sistema_operacional, modelo, MacAddress, total_memoria, total_armazenamento, idEmpresa) values ('%s','%s','%s','%s','%s',%d)", api.sistemaOperacional(), api.modeloProcessador(), api.macAddress(), api.totalMemoria(), api.totalDisco(), usuarioLogadoAzure.getIdEmpresa()));
-                conMySql.update(String.format("insert into Computador (sistema_operacional, modelo, MacAddress, total_memoria, total_armazenamento, idEmpresa) values ('%s','%s','%s','%s','%s', %d)", api.sistemaOperacional(), api.modeloProcessador(), api.macAddress(), api.totalMemoria(), api.totalDisco(), usuarioLogadoAzure.getIdEmpresa()));
 
+             if (computadoresLogadosMySql.isEmpty()) {
+                    System.out.println("cadastrei no container");
+                    conMySql.update(String.format("insert into Computador (sistema_operacional, modelo, MacAddress, total_memoria, total_armazenamento, idEmpresa) values ('%s','%s','%s','%s','%s', %d)", api.sistemaOperacional(), api.modeloProcessador(), api.macAddress(), api.totalMemoria(), api.totalDisco(), usuarioLogadoAzure.getIdEmpresa()));
+                }
                 System.out.println("Cadastrei os computadores!!");
 
                 computadoresLogadosAzure = conAzure.query(selectComputador, new BeanPropertyRowMapper<>(Computador.class), usuarioLogadoAzure.getIdEmpresa(), api.macAddress());
@@ -64,14 +67,14 @@ public class TesteLogin {
 
             } else {
                 System.out.println("computador já estava cadastrado");
-               computadoresLogadosAzure = conAzure.query(selectComputador, new BeanPropertyRowMapper<>(Computador.class), usuarioLogadoAzure.getIdEmpresa(), api.macAddress());
+                computadoresLogadosAzure = conAzure.query(selectComputador, new BeanPropertyRowMapper<>(Computador.class), usuarioLogadoAzure.getIdEmpresa(), api.macAddress());
 
                 log.inserirLoginBanco(usuarioLogadoAzure, computadoresLogadosAzure.get(0));
                 System.out.println(computadoresLogadosAzure);
 
             }
 
-            System.out.println("COMEÇAR A REGISTRAR DADOS A CADA X SEGUNDOS");
+            System.out.println("COMEÇAR A REGISTRAR DADOS A CADA 5 SEGUNDOS");
 
             Timer tempo = new Timer();
             tempo.scheduleAtFixedRate(new TimerTask() {
@@ -88,7 +91,7 @@ public class TesteLogin {
                         System.out.println("Erro ao inserir dados: " + e.getMessage());
                     }
                 }
-            }, 0, 20000);
+            }, 0, 5000);
         } catch (EmptyResultDataAccessException e) {
             System.out.println("Usuário ou senha incorretos");
             log.salvar(emailDigitado, false);
